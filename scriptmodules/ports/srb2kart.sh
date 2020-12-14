@@ -31,11 +31,23 @@ function sources_srb2kart() {
 }
 
 function build_srb2kart() {
+	# Override the original C/C++ compiler flags to better
+	# optimize the final binary.
+	export CFLAGS="$__cpu_flags -O3"
+	export CXXFLAGS=$CFLAGS
+
 	# Compile for 64-bit Linux on all threads, and without
 	# hardware acceleration, GME music playback, x86 assembly
 	# since we're compiling specifically for ARM, or UPX.
 	local makeargs="-j"$(nproc)" -C src/ LINUX64=1 NOHW=1 NOGME=1 NOASM=1 NOUPX=1"
 
+	# Print information about the current build environment.
+	echo "CFLAGS="$CFLAGS
+	echo "CXXFLAGS"=$CFLAGS
+	echo "Building with: make "$makeargs
+	echo ""
+
+	# Clean existing sources and build the final binary.
 	make $makeargs clean
 	make $makeargs
 
